@@ -1,19 +1,20 @@
 <?php
 
-namespace Database\Factories;
+namespace Modules\Order\Database\Factories;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 use Modules\Order\Models\Order;
 
-class orderFactory extends Factory
+class OrderFactory extends Factory
 {
     protected $model = Order::class;
 
-    public function definition()
+    public function definition(): array
     {
         return [
+            'status' => $this->faker->word(),
             'total_in_cents' => $this->faker->randomNumber(),
             'payment_gateway' => $this->faker->word(),
             'payment_id' => $this->faker->word(),
