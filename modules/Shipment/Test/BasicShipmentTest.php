@@ -1,11 +1,10 @@
 <?php
 
-
 use Tests\TestCase;
 
 class BasicShipmentTest extends TestCase
 {
-    public function testBasic()
+    public function test_basic()
     {
         $response = $this->get('/');
 

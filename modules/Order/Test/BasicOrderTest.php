@@ -1,20 +1,17 @@
 <?php
 
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Modules\Order\Models\Order;
 use Tests\TestCase;
 
 class BasicOrderTest extends TestCase
 {
-    use \Illuminate\Foundation\Testing\RefreshDatabase;
+    use RefreshDatabase;
 
-    public function testBasic()
+    public function test_basic()
     {
+        $order = Order::factory()->create();
 
-        $order = \Modules\Order\Models\Order::factory()->create();
-
-        // this also works!
-        //$order = \Modules\Order\Database\Factories\OrderFactory::new()->create();
-
-        self::assertNotEmpty($order->id);
+        self::assertNotEmpty($order->total_in_cents);
     }
 }
