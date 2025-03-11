@@ -1,5 +1,5 @@
 {
-    "$schema": "https://getcomposer.org/schema.json",
+    "schema": "https://getcomposer.org/schema.json",
     "name": "laravel/laravel",
     "type": "project",
     "description": "The skeleton application for the Laravel framework.",
@@ -55,7 +55,9 @@
             "Composer\\Config::disableProcessTimeout",
             "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite"
         ],
-        "ide": "@php artisan ide-helper:models --dir='modules' --nowrite"
+        "ide": "@php artisan ide-helper:models --dir='modules' --nowrite",
+        "test" : "@php artisan test",
+        "lint": "./vendor/bin/pint --dirty"
     },
     "extra": {
         "laravel": {
