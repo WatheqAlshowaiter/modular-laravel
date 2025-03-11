@@ -53,8 +53,11 @@ namespace Modules\Order\Models{
  * @property string $payment_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Modules\Payment\Payment|null $latestPayment
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Modules\Order\Models\OrderLine> $lines
  * @property-read int|null $lines_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Modules\Payment\Payment> $payments
+ * @property-read int|null $payments_count
  * @property-read \App\Models\User|null $user
  * @method static \Modules\Order\Database\Factories\OrderFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order newModelQuery()
@@ -97,6 +100,19 @@ namespace Modules\Order\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OrderLine whereUpdatedAt($value)
  */
 	class OrderLine extends \Eloquent {}
+}
+
+namespace Modules\Payment{
+/**
+ * 
+ *
+ * @property-read \Modules\Order\Models\Order|null $order
+ * @property-read \App\Models\User|null $user
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment query()
+ */
+	class Payment extends \Eloquent {}
 }
 
 namespace Modules\Product\Models{

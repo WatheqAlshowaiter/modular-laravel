@@ -16,10 +16,15 @@ class CartItemCollection
 
     public static function fromCheckoutData(array $data): CartItemCollection
     {
-        $cartItems = collect($data)->map(function ($product) {
+        $cartData = collect($data);
+        $products = Product::whereIn('id', $cartData->pluck('id'))->get();
+
+        $cartItems = $products->map(function (Product $productModel) use ($cartData) {
+            $cartItem = $cartData->where('id', $productModel->id)->first();
+
             return new CartItem(
-                ProductDto::fromEloquentModel(Product::find($product['id'])),
-                $product['quantity']
+                ProductDto::fromEloquentModel($productModel),
+                $cartItem['quantity']
             );
         });
 

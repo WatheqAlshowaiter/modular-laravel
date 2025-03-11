@@ -7,12 +7,28 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Modules\Order\Database\Factories\OrderFactory;
+use Modules\Payment\Payment;
 
 class Order extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'user_id',
+        'status',
+        'total_in_cents',
+    ];
+
+    protected static function newFactory(): OrderFactory
+    {
+        return new OrderFactory;
+    }
+
+    /**
+     * Relations
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -23,8 +39,13 @@ class Order extends Model
         return $this->hasMany(OrderLine::class);
     }
 
-    protected static function newFactory(): OrderFactory
+    public function payments(): HasMany
     {
-        return new OrderFactory;
+        return $this->hasMany(Payment::class);
+    }
+
+    public function lastPayment(): HasOne
+    {
+        return $this->payments()->one()->latest();
     }
 }

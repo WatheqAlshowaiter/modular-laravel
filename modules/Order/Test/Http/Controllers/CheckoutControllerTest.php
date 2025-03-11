@@ -9,6 +9,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Order\Models\Order;
 use Modules\Order\Test\OrderTestCase;
 use Modules\Payment\PayBuddy;
+use Modules\Payment\Payment;
 use PHPUnit\Framework\Attributes\Test;
 
 class CheckoutControllerTest extends OrderTestCase
@@ -41,12 +42,20 @@ class CheckoutControllerTest extends OrderTestCase
 
         $order = Order::query()->latest('id')->first();
 
-        // order
+        // Order
         $this->assertTrue($order->user->is($user));
         $this->assertEquals(60000, $order->total_in_cents);
-        $this->assertEquals('paid', $order->status);
-        $this->assertEquals('PayBuddy', $order->payment_gateway);
-        $this->assertEquals(36, strlen($order->payment_id));
+        $this->assertEquals('completed', $order->status);
+
+        // Payment
+        /** @var Payment $payment */
+        $payment = $order->lastPayment;
+
+        $this->assertEquals('paid', $payment->status);
+        $this->assertEquals('PayBuddy', $payment->payment_gateway);
+        $this->assertEquals(36, strlen($payment->payment_id));
+        $this->assertEquals(60000, $payment->total_in_cents);
+        $this->assertTrue($payment->user->is($user));
 
         $this->assertCount(2, $order->lines);
 
