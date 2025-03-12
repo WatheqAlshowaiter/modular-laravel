@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Product;
+namespace Modules\Product\Dtos;
 
 use Illuminate\Support\Collection;
 use Modules\Product\Models\Product;

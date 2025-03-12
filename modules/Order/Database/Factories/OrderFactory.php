@@ -16,8 +16,6 @@ class OrderFactory extends Factory
         return [
             'status' => $this->faker->word(),
             'total_in_cents' => $this->faker->randomNumber(),
-            'payment_gateway' => $this->faker->word(),
-            'payment_id' => $this->faker->word(),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
 

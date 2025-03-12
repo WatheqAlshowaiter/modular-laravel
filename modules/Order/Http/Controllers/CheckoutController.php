@@ -7,7 +7,7 @@ use Modules\Order\Actions\PurchaseItems;
 use Modules\Order\Exceptions\PaymentFailedException;
 use Modules\Order\Http\Requests\CheckoutRequests;
 use Modules\Payment\PayBuddy;
-use Modules\Product\CartItemCollection;
+use Modules\Product\Dtos\CartItemCollection;
 use Modules\Product\Warehouse\ProductStockManager;
 
 class CheckoutController
