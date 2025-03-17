@@ -11,31 +11,25 @@ class CartItemCollection
      * @param  Collection<CartItem>  $items
      */
     public function __construct(
-        public Collection $items,
+        protected Collection $items
     ) {}
 
     public static function fromCheckoutData(array $data): CartItemCollection
     {
-        $cartData = collect($data);
-        $products = Product::whereIn('id', $cartData->pluck('id'))->get();
-
-        $cartItems = $products->map(function (Product $productModel) use ($cartData) {
-            $cartItem = $cartData->where('id', $productModel->id)->first();
-
+        $cartItems = collect($data)->map(function (array $productDetails) {
             return new CartItem(
-                ProductDto::fromEloquentModel($productModel),
-                $cartItem['quantity']
+                ProductDto::fromEloquentModel(Product::find($productDetails['id'])),
+                $productDetails['quantity']
             );
         });
 
         return new self($cartItems);
     }
 
-    public function totalInCents()
+    public function totalInCents(): int
     {
-        return $this->items->sum(function (CartItem $cartItem) {
-            return $cartItem->quantity * $cartItem->product->priceInCents;
-        });
+        return $this->items->sum(fn (CartItem $cartItem) => $cartItem->quantity * $cartItem->product->priceInCents
+        );
     }
 
     /**

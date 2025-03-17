@@ -1,29 +1,31 @@
 <?php
 
-namespace Http\Controllers;
+namespace Modules\Order\Test\Http\Controllers;
 
-use Database\Factories\ProductFactory;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\Sequence;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Support\Facades\Mail;
+use Modules\Order\Database\Factories\ProductFactory;
+use Modules\Order\Mail\OrderReceived;
 use Modules\Order\Models\Order;
 use Modules\Order\Test\OrderTestCase;
 use Modules\Payment\PayBuddy;
-use Modules\Payment\Payment;
 use PHPUnit\Framework\Attributes\Test;
 
 class CheckoutControllerTest extends OrderTestCase
 {
-    use RefreshDatabase;
+    use DatabaseMigrations;
 
     #[Test]
-    public function it_successfully_creates_an_order()
+    public function it_successfuly_creates_an_order(): void
     {
+        Mail::fake();
         $user = UserFactory::new()->create();
         $products = ProductFactory::new()->count(2)->create(
             new Sequence(
-                ['name' => 'Very expensive product', 'price_in_cents' => 10000, 'stock' => 10],
-                ['name' => 'Macbook pro', 'price_in_cents' => 50000, 'stock' => 10],
+                ['name' => 'Very expensive air fryer', 'price_in_cents' => 10000, 'stock' => 10],
+                ['name' => 'Macbook Pro M3', 'price_in_cents' => 50000, 'stock' => 10]
             )
         );
 
@@ -46,24 +48,28 @@ class CheckoutControllerTest extends OrderTestCase
             ])
             ->assertStatus(201);
 
+        Mail::assertSent(OrderReceived::class, function (OrderReceived $mail) use ($user) {
+            return $mail->hasTo($user->email);
+        });
+
         // Order
         $this->assertTrue($order->user->is($user));
         $this->assertEquals(60000, $order->total_in_cents);
         $this->assertEquals('completed', $order->status);
 
         // Payment
-        /** @var Payment $payment */
         $payment = $order->lastPayment;
-
         $this->assertEquals('paid', $payment->status);
         $this->assertEquals('PayBuddy', $payment->payment_gateway);
         $this->assertEquals(36, strlen($payment->payment_id));
         $this->assertEquals(60000, $payment->total_in_cents);
         $this->assertTrue($payment->user->is($user));
 
+        // Order Lines
         $this->assertCount(2, $order->lines);
 
         foreach ($products as $product) {
+            /** @var \Modules\Order\Models\OrderLine $orderLine */
             $orderLine = $order->lines->where('product_id', $product->id)->first();
 
             $this->assertEquals($product->price_in_cents, $orderLine->product_price_in_cents);
@@ -77,11 +83,10 @@ class CheckoutControllerTest extends OrderTestCase
     }
 
     #[Test]
-    public function it_fails_with_an_invalid_token()
+    public function it_fails_with_an_invalid_token(): void
     {
         $user = UserFactory::new()->create();
-        $product = ProductFactory::new()->create();
-
+        $product = \Modules\Order\Database\Factories\ProductFactory::new()->create();
         $paymentToken = PayBuddy::invalidToken();
 
         $response = $this->actingAs($user)
@@ -93,7 +98,7 @@ class CheckoutControllerTest extends OrderTestCase
             ]));
 
         $response->assertStatus(422)
-            ->assertJsonValidationErrors('payment_token');
+            ->assertJsonValidationErrors(['payment_token']);
 
         $this->assertEquals(0, Order::query()->count());
     }

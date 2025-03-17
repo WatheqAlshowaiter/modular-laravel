@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Factories;
+namespace Modules\Order\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
@@ -12,7 +12,7 @@ class OrderLineFactory extends Factory
 {
     protected $model = OrderLine::class;
 
-    public function definition()
+    public function definition(): array
     {
         return [
             'product_price_in_cents' => $this->faker->randomNumber(),

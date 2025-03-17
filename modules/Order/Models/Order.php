@@ -13,6 +13,7 @@ use Modules\Order\Exceptions\OrderMissingOrderLinesException;
 use Modules\Payment\Payment;
 use Modules\Product\Dtos\CartItem;
 use Modules\Product\Dtos\CartItemCollection;
+use NumberFormatter;
 
 class Order extends Model
 {
@@ -24,26 +25,18 @@ class Order extends Model
         'total_in_cents',
     ];
 
-    const PENDING = 'pending';
+    protected $casts = [
+        'user_id' => 'integer',
+        'total_in_cents' => 'integer',
+    ];
 
-    const COMPLETED = 'completed';
+    public const COMPLETED = 'completed';
 
-    protected static function newFactory(): OrderFactory
-    {
-        return new OrderFactory;
-    }
+    public const PENDING = 'pending';
 
-    /**
-     * Relations
-     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function lines(): HasMany
-    {
-        return $this->hasMany(OrderLine::class);
     }
 
     public function payments(): HasMany
@@ -56,12 +49,20 @@ class Order extends Model
         return $this->payments()->one()->latest();
     }
 
-    /**
-     * Methods
-     */
+    public function lines(): HasMany
+    {
+        return $this->hasMany(OrderLine::class);
+    }
+
     public function url(): string
     {
         return route('order::orders.show', $this);
+    }
+
+    public function localizedTotal(): string
+    {
+        return (new NumberFormatter('en-US', NumberFormatter::CURRENCY))->formatCurrency($this->total_in_cents / 100,
+            'USD');
     }
 
     public static function startForUser(int $userId): self
@@ -100,7 +101,11 @@ class Order extends Model
         $this->status = self::COMPLETED;
 
         $this->save();
-
         $this->lines()->saveMany($this->lines);
+    }
+
+    protected static function newFactory(): OrderFactory
+    {
+        return OrderFactory::new();
     }
 }

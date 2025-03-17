@@ -1,17 +1,17 @@
 <?php
 
-namespace Database\Factories;
+namespace Modules\Shipment\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 use Modules\Order\Models\Order;
 use Modules\Shipment\Models\shipment;
 
-class shipmentFactory extends Factory
+class ShipmentFactory extends Factory
 {
-    protected $model = shipment::class;
+    protected $model = Shipment::class;
 
-    public function definition()
+    public function definition(): array
     {
         return [
             'provider' => $this->faker->word(),
