@@ -18,7 +18,7 @@ class CheckoutControllerTest extends OrderTestCase
     use DatabaseMigrations;
 
     #[Test]
-    public function it_successfuly_creates_an_order(): void
+    public function it_successfully_creates_an_order(): void
     {
         Mail::fake();
         $user = UserFactory::new()->create();

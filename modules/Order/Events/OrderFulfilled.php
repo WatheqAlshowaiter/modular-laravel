@@ -2,26 +2,18 @@
 
 namespace Modules\Order\Events;
 
-use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Modules\Product\Dtos\CartItemCollection;
+use Modules\Order\DTOs\OrderDto;
+use Modules\User\UserDto;
 
-class OrderFulfilled
+readonly class OrderFulfilled
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable, SerializesModels;
 
-    /**
-     * Create a new event instance.
-     */
     public function __construct(
-        public int $orderId,
-        public int $totalInCents,
-        public string $localizedTotal,
-        public CartItemCollection $cartItems,
-        public int $userId,
-        public string $userEmail,
-
+        public OrderDto $order,
+        public UserDto $userDto
     ) {
         //
     }

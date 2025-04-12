@@ -61,8 +61,8 @@ class Order extends Model
 
     public function localizedTotal(): string
     {
-        return (new NumberFormatter('en-US', NumberFormatter::CURRENCY))->formatCurrency($this->total_in_cents / 100,
-            'USD');
+        return (new NumberFormatter('en-US', NumberFormatter::CURRENCY))
+            ->formatCurrency($this->total_in_cents / 100, 'USD');
     }
 
     public static function startForUser(int $userId): self
