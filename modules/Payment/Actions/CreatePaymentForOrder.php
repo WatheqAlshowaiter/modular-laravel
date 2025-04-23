@@ -3,7 +3,7 @@
 namespace Modules\Payment\Actions;
 
 use Modules\Order\Exceptions\PaymentFailedException;
-use Modules\Payment\PayBuddy;
+use Modules\Payment\PayBuddySdk;
 use Modules\Payment\Payment;
 use RuntimeException;
 
@@ -16,7 +16,7 @@ class CreatePaymentForOrder
         int $orderId,
         int $userId,
         int $totalInCents,
-        PayBuddy $payBuddy,
+        PayBuddySdk $payBuddy,
         string $paymentToken
     ): Payment {
         try {

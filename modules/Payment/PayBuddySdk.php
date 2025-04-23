@@ -6,7 +6,7 @@ use Illuminate\Support\Str;
 use NumberFormatter;
 use RuntimeException;
 
-class PayBuddy
+class PayBuddySdk
 {
     public function charge(string $token, int $amountInCents, string $statementDescription): array
     {
@@ -23,7 +23,7 @@ class PayBuddy
         ];
     }
 
-    public static function make(): PayBuddy
+    public static function make(): PayBuddySdk
     {
         return new self;
     }
