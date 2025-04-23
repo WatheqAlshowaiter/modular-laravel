@@ -1,5 +1,7 @@
 <?php
 
+namespace Modules\Product\Test;
+
 use Tests\TestCase;
 
 class BasicProductTest extends TestCase

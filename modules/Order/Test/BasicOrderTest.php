@@ -1,5 +1,7 @@
 <?php
 
+namespace Modules\Order\Test;
+
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Order\Models\Order;
 use Tests\TestCase;

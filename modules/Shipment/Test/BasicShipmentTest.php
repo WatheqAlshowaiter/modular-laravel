@@ -1,4 +1,5 @@
 <?php
+namespace Modules\Shipment\Test;
 
 use Tests\TestCase;
 
