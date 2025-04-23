@@ -9,6 +9,10 @@ use Modules\Order\Models\Order;
 
 class Payment extends Model
 {
+    protected $casts = [
+        'payment_gateway' => PaymentProvider::class,
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

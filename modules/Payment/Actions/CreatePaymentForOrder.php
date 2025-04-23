@@ -2,9 +2,10 @@
 
 namespace Modules\Payment\Actions;
 
-use Modules\Order\Exceptions\PaymentFailedException;
-use Modules\Payment\PayBuddySdk;
+use Modules\Payment\Exceptions\PaymentFailedException;
 use Modules\Payment\Payment;
+use Modules\Payment\PaymentDetails;
+use Modules\Payment\PaymentGateway;
 use RuntimeException;
 
 class CreatePaymentForOrder
@@ -16,21 +17,23 @@ class CreatePaymentForOrder
         int $orderId,
         int $userId,
         int $totalInCents,
-        PayBuddySdk $payBuddy,
+        PaymentGateway $paymentGateway,
         string $paymentToken
     ): Payment {
-        try {
-            $charge = $payBuddy->charge($paymentToken, $totalInCents, 'Modular Laravel');
-        } catch (RuntimeException) {
-            throw PaymentFailedException::dueToInvalidToken();
-        }
+        $charge = $paymentGateway->charge(
+            new PaymentDetails(
+                token: $paymentToken,
+                amountInCents: $totalInCents,
+                statementDescription: "Modularization"
+            )
+        );
 
         return Payment::create([
             'order_id' => $orderId,
             'total_in_cents' => $totalInCents,
             'status' => 'paid',
-            'payment_gateway' => 'PayBuddy',
-            'payment_id' => $charge['id'],
+            'payment_gateway' => $charge->paymentProvider,
+            'payment_id' => $charge->id,
             'user_id' => $userId,
         ]);
     }

@@ -5,22 +5,24 @@ namespace Modules\Order\Http\Controllers;
 use Illuminate\Validation\ValidationException;
 use Modules\Order\Actions\PurchaseItems;
 use Modules\Order\DTOs\PendingPayment;
-use Modules\Order\Exceptions\PaymentFailedException;
 use Modules\Order\Http\Requests\CheckoutRequests;
-use Modules\Payment\PayBuddySdk;
+use Modules\Payment\Exceptions\PaymentFailedException;
+use Modules\Payment\PaymentGateway;
 use Modules\Product\Dtos\CartItemCollection;
 use Modules\User\UserDto;
 
 class CheckoutController
 {
     public function __construct(
-        protected PurchaseItems $purchaseItems
-    ) {}
+        protected PurchaseItems $purchaseItems,
+        public PaymentGateway $paymentGateway
+    ) {
+    }
 
     public function __invoke(CheckoutRequests $request)
     {
         $cartItems = CartItemCollection::fromCheckoutData($request->input('products'));
-        $pendingPayment = new PendingPayment(PayBuddySdk::make(), $request->input('payment_token'));
+        $pendingPayment = new PendingPayment($this->paymentGateway, $request->input('payment_token'));
         $userDto = UserDto::fromEloquentModel($request->user());
 
         try {
