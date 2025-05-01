@@ -1,7 +1,7 @@
 <?php
 
-use Modules\Order\Http\Controllers\CheckoutController;
-use Modules\Order\Models\Order;
+use Modules\Order\src\Http\Controllers\CheckoutController;
+use Modules\Order\src\Models\Order;
 
 Route::middleware('auth')->group(function () {
     Route::post('checkout', CheckoutController::class)->name('checkout');

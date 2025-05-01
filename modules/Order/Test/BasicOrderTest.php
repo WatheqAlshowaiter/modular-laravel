@@ -3,7 +3,7 @@
 namespace Modules\Order\Test;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Modules\Order\Models\Order;
+use Modules\Order\src\Models\Order;
 use Tests\TestCase;
 
 class BasicOrderTest extends TestCase

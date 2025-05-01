@@ -6,9 +6,9 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Mail;
-use Modules\Order\Database\Factories\ProductFactory;
-use Modules\Order\Mail\OrderReceived;
-use Modules\Order\Models\Order;
+use Modules\Order\database\Factories\ProductFactory;
+use Modules\Order\src\Mail\OrderReceived;
+use Modules\Order\src\Models\Order;
 use Modules\Order\Test\OrderTestCase;
 use Modules\Payment\PayBuddySdk;
 use Modules\Payment\PaymentProvider;
@@ -70,7 +70,7 @@ class CheckoutControllerTest extends OrderTestCase
         $this->assertCount(2, $order->lines);
 
         foreach ($products as $product) {
-            /** @var \Modules\Order\Models\OrderLine $orderLine */
+            /** @var \Modules\Order\src\Models\OrderLine $orderLine */
             $orderLine = $order->lines->where('product_id', $product->id)->first();
 
             $this->assertEquals($product->price_in_cents, $orderLine->product_price_in_cents);
@@ -87,7 +87,7 @@ class CheckoutControllerTest extends OrderTestCase
     public function it_fails_with_an_invalid_token(): void
     {
         $user = UserFactory::new()->create();
-        $product = \Modules\Order\Database\Factories\ProductFactory::new()->create();
+        $product = \Modules\Order\database\Factories\ProductFactory::new()->create();
         $paymentToken = PayBuddySdk::invalidToken();
 
         $response = $this->actingAs($user)

@@ -4,7 +4,7 @@ namespace Modules\Shipment\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
-use Modules\Order\Models\Order;
+use Modules\Order\src\Models\Order;
 use Modules\Shipment\Models\shipment;
 
 class ShipmentFactory extends Factory

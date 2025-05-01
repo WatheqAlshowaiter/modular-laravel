@@ -1,16 +1,16 @@
 <?php
 
-namespace Modules\Product\Providers;
+namespace Modules\Order\src\Providers;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as BaseEventServiceProvider;
 use Modules\Order\src\Events\OrderFulfilled;
-use Modules\Product\Listeners\DecreaseProductStock;
+use Modules\Order\src\Listeners\SendOrderConfirmationEmail;
 
 class EventServiceProvider extends BaseEventServiceProvider
 {
     protected $listen = [
         OrderFulfilled::class => [
-            DecreaseProductStock::class,
+            SendOrderConfirmationEmail::class,
         ],
     ];
 }
